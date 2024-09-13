@@ -105,9 +105,9 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
                             style: const TextStyle(
                               color: Colors.blueGrey,
                             ))),
-                  )
+                  ),
+                  const SizedBox(width: 22.0),
                 ],
-                const SizedBox(width: 22.0),
                 Expanded(
                   child: index == editingIndex
                       ? textInput(index)
