@@ -10,6 +10,7 @@ class SimpleMarkdownEditor extends StatefulWidget {
   final String content;
   final bool showLineNumber;
   final EdgeInsets? padding;
+  final EdgeInsets? contentPadding;
   final Function(String)? onContentChange;
 
   const SimpleMarkdownEditor(
@@ -17,7 +18,8 @@ class SimpleMarkdownEditor extends StatefulWidget {
       required this.content,
       this.onContentChange,
       this.showLineNumber = true,
-      this.padding});
+      this.padding,
+      this.contentPadding});
 
   @override
   State<SimpleMarkdownEditor> createState() =>
@@ -90,7 +92,8 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
           onTap: () => onTap(index),
           // behavior: HitTestBehavior.opaque,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: widget.contentPadding ??
+                const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,

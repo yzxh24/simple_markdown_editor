@@ -85,7 +85,9 @@ You can use a colon to define the alignment of the table, like this:
       ),
       body: SimpleMarkdownEditor(
         content: texts,
+        showLineNumber: false,
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 1.0),
         onContentChange: (content) {
           print(content);
         },
