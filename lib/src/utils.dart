@@ -8,13 +8,13 @@ List<String> splitTexts(String texts) {
   for (String line in lines) {
     if (line.trim().startsWith("```")) {
       if (inCodeBlock) {
-        // 结束代码块
-        currentBlock += "$line\n";
+        // end code block
+        currentBlock += line;
         result.add(currentBlock);
         currentBlock = "";
         inCodeBlock = false;
       } else {
-        // 开始新的代码块
+        // start new code block
         if (currentBlock.isNotEmpty) {
           result.add(currentBlock);
         }
@@ -22,7 +22,7 @@ List<String> splitTexts(String texts) {
         inCodeBlock = true;
       }
     } else if (line.trim().startsWith("|") || line.trim().startsWith("+-")) {
-      // 检测表格开始或继续
+      // detect table start or continue
       if (!inTable) {
         if (currentBlock.isNotEmpty) {
           result.add(currentBlock);
@@ -33,15 +33,15 @@ List<String> splitTexts(String texts) {
         currentBlock += "$line\n";
       }
     } else if (inTable && line.trim().isEmpty) {
-      // 检测表格结束
+      // detect table end
       result.add(currentBlock);
       currentBlock = "";
       inTable = false;
     } else if (inCodeBlock || inTable) {
-      // 在代码块或表格内，继续添加行
+      // continue add line in code block or table
       currentBlock += "$line\n";
     } else {
-      // 不在代码块或表格内，单独添加行
+      // not in code block or table, add line separately
       if (currentBlock.isNotEmpty) {
         result.add(currentBlock);
         currentBlock = "";
@@ -50,7 +50,7 @@ List<String> splitTexts(String texts) {
     }
   }
 
-  // 添加最后一个块（如果有的话）
+  // add last block (if any)
   if (currentBlock.isNotEmpty) {
     result.add(currentBlock);
   }
