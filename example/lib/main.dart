@@ -83,11 +83,9 @@ You can use a colon to define the alignment of the table, like this:
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SimpleMarkdownEditor(
-          content: texts,
-        ),
+      body: SimpleMarkdownEditor(
+        content: texts,
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
       ),
     );
   }

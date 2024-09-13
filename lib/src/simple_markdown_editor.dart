@@ -9,16 +9,19 @@ import 'package:flutter_highlighter/flutter_highlighter.dart';
 class SimpleMarkdownEditor extends StatefulWidget {
   final String content;
   final bool showLineNumber;
+  final EdgeInsets? padding;
   final Function(String)? onContentChange;
 
   const SimpleMarkdownEditor(
       {super.key,
       required this.content,
       this.onContentChange,
-      this.showLineNumber = true});
+      this.showLineNumber = true,
+      this.padding});
 
   @override
-  State<SimpleMarkdownEditor> createState() => SimpleMarkdownEditorEditorState();
+  State<SimpleMarkdownEditor> createState() =>
+      SimpleMarkdownEditorEditorState();
 }
 
 class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
@@ -61,6 +64,7 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
   Widget build(BuildContext context) {
     return SelectionArea(
         child: ListView.builder(
+      padding: widget.padding,
       itemCount: texts.length,
       itemBuilder: (context, index) {
         double width = 22.0 +
