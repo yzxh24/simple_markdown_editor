@@ -26,6 +26,7 @@ class SimpleMarkdownEditor extends StatefulWidget {
 
 class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
   List<String> texts = [];
+  String _lastNotifiedContent = '';
 
   int? editingIndex;
   final TextEditingController _controller = TextEditingController();
@@ -38,6 +39,7 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
   void initState() {
     super.initState();
     texts = splitTexts(widget.content);
+    _lastNotifiedContent = widget.content;
     _controller.addListener(_updateText);
     for (int i = 0; i < texts.length; i++) {
       _focusNodes.add(FocusNode());
@@ -57,6 +59,17 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
   void _updateText() {
     if (editingIndex != null) {
       texts[editingIndex!] = _controller.text;
+      _notifyContentChangeIfNeeded();
+    }
+  }
+
+  void _notifyContentChangeIfNeeded() {
+    String currentContent = texts.join('\n');
+    if (currentContent != _lastNotifiedContent) {
+      _lastNotifiedContent = currentContent;
+      if (widget.onContentChange != null) {
+        widget.onContentChange!(currentContent);
+      }
     }
   }
 
@@ -248,6 +261,7 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
         });
       }
     });
+    _notifyContentChangeIfNeeded();
   }
 
   int _getTextPositionFromGlobalPosition(Offset globalPosition, int index) {
@@ -278,6 +292,7 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
         editingIndex = null;
       }
     });
+    _notifyContentChangeIfNeeded();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (editingIndex != null) {
