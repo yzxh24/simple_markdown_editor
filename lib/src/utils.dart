@@ -3,6 +3,7 @@ List<String> splitTexts(String texts) {
   List<String> lines = texts.split("\n");
   bool inCodeBlock = false;
   bool inTable = false;
+  bool inUnorderedList = false;
   String currentBlock = "";
 
   for (String line in lines) {
@@ -32,11 +33,34 @@ List<String> splitTexts(String texts) {
       } else {
         currentBlock += "$line\n";
       }
-    } else if (inTable && line.trim().isEmpty) {
-      // detect table end
+    } else if (line.trim().startsWith("- ") ||
+        line.trim().startsWith("* ") ||
+        line.trim().startsWith("+ ")) {
+      // start or continue unordered list
+      if (!inUnorderedList) {
+        if (currentBlock.isNotEmpty) {
+          result.add(currentBlock);
+        }
+        currentBlock = "$line\n";
+        inUnorderedList = true;
+      } else {
+        currentBlock += "$line\n";
+      }
+    } else if (inUnorderedList &&
+        (line.trim().isEmpty || line.trim().startsWith("  "))) {
+      // continue add line in unordered list
+      currentBlock += "$line\n";
+    } else if (inUnorderedList) {
+      // end unordered list
       result.add(currentBlock);
       currentBlock = "";
-      inTable = false;
+      inUnorderedList = false;
+      // handle current line not in list
+      if (inCodeBlock || inTable) {
+        currentBlock += "$line\n";
+      } else {
+        result.add(line);
+      }
     } else if (inCodeBlock || inTable) {
       // continue add line in code block or table
       currentBlock += "$line\n";
@@ -72,6 +96,18 @@ bool isInsideCodeBlock(String text, int cursorPosition) {
 bool isInsideTable(String text, int cursorPosition) {
   RegExp tableRegex = RegExp(r'\|.*\|[\s\S]*?\|.*\|');
   Iterable<RegExpMatch> matches = tableRegex.allMatches(text);
+  for (RegExpMatch match in matches) {
+    if (match.start <= cursorPosition && cursorPosition <= match.end) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool isInsideUnorderedList(String text, int cursorPosition) {
+  RegExp listItemRegex =
+      RegExp(r'(^|\n)[ \t]*[-*+][ \t]+.*(\n[ \t]+.*)*', multiLine: true);
+  Iterable<RegExpMatch> matches = listItemRegex.allMatches(text);
   for (RegExpMatch match in matches) {
     if (match.start <= cursorPosition && cursorPosition <= match.end) {
       return true;

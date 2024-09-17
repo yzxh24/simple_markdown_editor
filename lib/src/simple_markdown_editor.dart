@@ -234,8 +234,10 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
       // Check if we're inside a code block or table
       bool insideCodeBlock = isInsideCodeBlock(currentText, cursorPosition);
       bool insideTable = isInsideTable(currentText, cursorPosition);
+      bool insideUnorderedList =
+          isInsideUnorderedList(currentText, cursorPosition);
 
-      if (insideCodeBlock || insideTable) {
+      if (insideCodeBlock || insideTable || insideUnorderedList) {
         // If inside a code block or table, just insert a newline character
         String newText =
             '${currentText.substring(0, cursorPosition)}${currentText.substring(cursorPosition)}';
