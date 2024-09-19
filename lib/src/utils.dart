@@ -33,6 +33,21 @@ List<String> splitTexts(String texts) {
       } else {
         currentBlock += "$line\n";
       }
+    } else if (inTable) {
+      // Check if the table has ended
+      if (line.trim().isEmpty) {
+        // Empty line, end the table
+        result.add(currentBlock);
+        currentBlock = "";
+        inTable = false;
+        result.add(line); // Add the empty line as a separate item
+      } else {
+        // Table has ended, add the current line separately
+        result.add(currentBlock);
+        currentBlock = "";
+        inTable = false;
+        result.add(line);
+      }
     } else if (line.trim().startsWith("- ") ||
         line.trim().startsWith("* ") ||
         line.trim().startsWith("+ ")) {
@@ -48,8 +63,16 @@ List<String> splitTexts(String texts) {
       }
     } else if (inUnorderedList &&
         (line.trim().isEmpty || line.trim().startsWith("  "))) {
-      // continue add line in unordered list
-      currentBlock += "$line\n";
+      // continue add line in unordered list if it's not empty
+      if (line.trim().isNotEmpty) {
+        currentBlock += "$line\n";
+      } else {
+        // End the list if we encounter an empty line
+        result.add(currentBlock);
+        currentBlock = "";
+        inUnorderedList = false;
+        result.add(line); // Add the empty line as a separate item
+      }
     } else if (inUnorderedList) {
       // end unordered list
       result.add(currentBlock);
@@ -79,7 +102,14 @@ List<String> splitTexts(String texts) {
     result.add(currentBlock);
   }
 
-  return result;
+  return result.map((e) {
+    if (e.endsWith('\n')) {
+      e = e.trimRight();
+    }
+    return e;
+  }).toList();
+
+  // return result;
 }
 
 bool isInsideCodeBlock(String text, int cursorPosition) {
