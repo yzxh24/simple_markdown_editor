@@ -275,12 +275,25 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: texts[index], style: const TextStyle(fontSize: 16)),
       textDirection: TextDirection.ltr,
-      maxLines: 1,
+      maxLines: null, // Allow multiple lines
     );
-    textPainter.layout();
-    return textPainter
-        .getPositionForOffset(localPosition - const Offset(16, 0))
-        .offset;
+    textPainter.layout(
+        maxWidth:
+            box.size.width - 38); // Subtract line number width and padding
+
+    final lineHeight = textPainter.preferredLineHeight;
+    final tappedLine = (localPosition.dy / lineHeight).floor();
+    final totalLines = (textPainter.height / lineHeight).ceil();
+
+    /// if the content is single line, use the existing precise logic
+    if (totalLines == 1) {
+      final tappedOffset = textPainter.getPositionForOffset(
+        Offset(localPosition.dx - 38, tappedLine * lineHeight),
+      );
+      return tappedOffset.offset;
+    } else {
+      return texts[index].length;
+    }
   }
 
   void _deleteCurrentLine(int index) {
