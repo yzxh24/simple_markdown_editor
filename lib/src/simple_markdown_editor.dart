@@ -5,6 +5,7 @@ import 'package:simple_markdown_editor/src/utils.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_highlighter/flutter_highlighter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SimpleMarkdownEditor extends StatefulWidget {
   final String content;
@@ -173,6 +174,9 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
             ),
             builders: {
               'code': SyntaxHighlightBuilder(),
+            },
+            onTapLink: (text, href, title) {
+              launchUrl(Uri.parse(href!));
             },
           );
   }

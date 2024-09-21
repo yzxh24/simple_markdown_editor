@@ -47,6 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
 ## Heading 1
 Some **bold** text.
 
+[Click me](https://www.google.com)
+
 ```dart
 void sourceCode() {
   print(123);
