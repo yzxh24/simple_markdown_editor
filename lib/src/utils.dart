@@ -1,3 +1,5 @@
+import 'package:path_provider/path_provider.dart';
+
 List<String> splitTexts(String texts) {
   List<String> result = [];
   List<String> lines = texts.split("\n");
@@ -144,4 +146,9 @@ bool isInsideUnorderedList(String text, int cursorPosition) {
     }
   }
   return false;
+}
+
+Future<String> getAbsoluteImagePath(String relativePath) async {
+  final directory = await getApplicationDocumentsDirectory();
+  return '${directory.path}/$relativePath';
 }

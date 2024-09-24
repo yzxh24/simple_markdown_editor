@@ -50,6 +50,8 @@ Some **bold** text.
 
 [Click me](https://www.google.com)
 
+![This is a image](note/qrcode_for_gh_82cf87d482f0_258.jpg)
+
 ```dart
 void sourceCode() {
   print(123);

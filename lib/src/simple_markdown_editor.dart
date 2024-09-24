@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_highlighter/themes/vs2015.dart';
@@ -178,6 +179,9 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
             builders: {
               'code': SyntaxHighlightBuilder(),
             },
+            imageBuilder: (uri, title, alt) {
+              return ImageBuilder(uri: uri);
+            },
             onTapLink: (text, href, title) {
               launchUrl(Uri.parse(href!));
             },
@@ -331,6 +335,48 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
         );
       }
     });
+  }
+}
+
+class ImageBuilder extends StatelessWidget {
+  const ImageBuilder({
+    super.key,
+    required this.uri,
+  });
+
+  final Uri uri;
+
+  @override
+  Widget build(BuildContext context) {
+    if (uri.isAbsolute) {
+      // network image
+      return Image.network(uri.toString());
+    } else {
+      // local image
+      return FutureBuilder<String>(
+        future: getAbsoluteImagePath(uri.path),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            final file = File(snapshot.data!);
+            return FutureBuilder<bool>(
+              future: file.exists(),
+              builder: (context, existsSnapshot) {
+                if (existsSnapshot.connectionState == ConnectionState.done) {
+                  if (existsSnapshot.data == true) {
+                    return Image.file(file);
+                  } else {
+                    return const Text('Image not found');
+                  }
+                }
+                return const CircularProgressIndicator();
+              },
+            );
+          }
+          return const CircularProgressIndicator();
+        },
+      );
+    }
   }
 }
 
