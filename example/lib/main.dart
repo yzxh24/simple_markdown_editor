@@ -43,6 +43,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final ScrollController scrollController = ScrollController();
   String texts = '''
 ## Heading 1
 Some **bold** text.
@@ -95,6 +96,12 @@ You can use a colon to define the alignment of the table, like this:
 ''';
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -105,9 +112,17 @@ You can use a colon to define the alignment of the table, like this:
         showLineNumber: false,
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         contentPadding: const EdgeInsets.symmetric(vertical: 1.0),
+        scrollController: scrollController,
         onContentChange: (content) {
           print(content);
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        mini: true,
+        onPressed: () {
+          scrollController.jumpTo(0);
+        },
+        child: const Icon(Icons.arrow_upward),
       ),
     );
   }

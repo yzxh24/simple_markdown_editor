@@ -12,6 +12,7 @@ class SimpleMarkdownEditor extends StatefulWidget {
   final bool showLineNumber;
   final EdgeInsets? padding;
   final EdgeInsets? contentPadding;
+  final ScrollController? scrollController;
   final Function(String)? onContentChange;
 
   const SimpleMarkdownEditor(
@@ -20,7 +21,8 @@ class SimpleMarkdownEditor extends StatefulWidget {
       this.onContentChange,
       this.showLineNumber = true,
       this.padding,
-      this.contentPadding});
+      this.contentPadding,
+      this.scrollController});
 
   @override
   State<SimpleMarkdownEditor> createState() =>
@@ -80,6 +82,7 @@ class SimpleMarkdownEditorEditorState extends State<SimpleMarkdownEditor> {
   Widget build(BuildContext context) {
     return SelectionArea(
         child: ListView.builder(
+      controller: widget.scrollController,
       padding: widget.padding,
       itemCount: texts.length,
       itemBuilder: (context, index) {
